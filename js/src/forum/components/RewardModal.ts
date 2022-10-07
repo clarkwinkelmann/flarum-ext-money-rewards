@@ -49,7 +49,7 @@ export default class RewardModal extends Modal<RewardModalAttrs> {
                         m('input', {
                             type: 'radio',
                             name: 'money-reward-preselection',
-                            selected: this.preselectAmount === index && !this.customAmount,
+                            checked: this.preselectAmount === index && !this.customAmount,
                             onchange: () => {
                                 this.preselectAmount = index;
                                 this.customAmount = false;
@@ -65,7 +65,7 @@ export default class RewardModal extends Modal<RewardModalAttrs> {
                     m('input', {
                         type: 'radio',
                         name: 'money-reward-preselection',
-                        selected: this.customAmount,
+                        checked: this.customAmount,
                         onchange: () => {
                             this.customAmount = true;
                         },
