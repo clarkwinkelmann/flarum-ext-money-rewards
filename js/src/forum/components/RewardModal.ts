@@ -122,6 +122,8 @@ export default class RewardModal extends Modal<RewardModalAttrs> {
     onsubmit(event: Event) {
         event.preventDefault();
 
+        this.loading = true;
+
         app.store.createRecord<Reward>('money-rewards').save({
             amount: this.customAmount ? this.customAmountValue : app.forum.attribute<string[]>('moneyRewardsPreselection')[this.preselectAmount],
             createMoney: this.createMoney,
@@ -129,8 +131,13 @@ export default class RewardModal extends Modal<RewardModalAttrs> {
             relationships: {
                 post: this.attrs.post,
             },
-        }).then(reward => {
-            app.modal.close();
-        });
+        }, {
+            errorHandler: this.onerror.bind(this)
+        })
+            .then(this.hide.bind(this))
+            .catch(() => {
+                this.loading = false;
+                m.redraw();
+            });
     }
 }
