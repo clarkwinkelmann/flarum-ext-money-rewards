@@ -5,6 +5,7 @@ namespace ClarkWinkelmann\MoneyRewards;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicPostSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
+use Flarum\Api\Serializer\UserSerializer;
 
 class RewardSerializer extends AbstractSerializer
 {
@@ -37,5 +38,16 @@ class RewardSerializer extends AbstractSerializer
     public function receiver($reward)
     {
         return $this->hasOne($reward, BasicUserSerializer::class);
+    }
+
+    public function fullGiver($reward)
+    {
+        // Same relation but with complete serializer to refresh user profile
+        return $this->hasOne($reward, UserSerializer::class, 'giver');
+    }
+
+    public function fullReceiver($reward)
+    {
+        return $this->hasOne($reward, UserSerializer::class, 'receiver');
     }
 }

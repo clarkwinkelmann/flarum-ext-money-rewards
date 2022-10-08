@@ -39,12 +39,12 @@ app.initializers.add('clarkwinkelmann-money-rewards', () => {
 
     extend(PostControls, 'userControls', function (items, post: Post) {
         if (!post.attribute('rewardWithMoney')) {
-            if (post.attribute('type') === 'comment') {
+            if (post.attribute('contentType') === 'comment' && app.session.user) {
                 items.add('money-reward', Button.component({
-                    disabled: true,
-                    icon: 'fas fa-money-bill',
+                    icon: 'fas fa-gift',
+                    className: 'disabled', // Setting just the class so you can still actually click the button
                     onclick: () => {
-                        alert(extractText(app.translator.trans('clarkwinkelmann-money-rewards.forum.post.disallowed')));
+                        alert(extractText(app.translator.trans('clarkwinkelmann-money-rewards.forum.post.disallowed' + (post.user() === app.session.user ? 'Own' : 'Other'))));
                     },
                 }, app.translator.trans('clarkwinkelmann-money-rewards.forum.post.action')));
             }
@@ -58,7 +58,7 @@ app.initializers.add('clarkwinkelmann-money-rewards', () => {
                     post,
                 });
             },
-            icon: 'fas fa-money-bill',
+            icon: 'fas fa-gift',
         }, app.translator.trans('clarkwinkelmann-money-rewards.forum.post.action')));
     });
 

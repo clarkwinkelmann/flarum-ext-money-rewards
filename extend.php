@@ -20,7 +20,7 @@ return [
         ->css(__DIR__ . '/less/forum.less'),
 
     (new Extend\Routes('api'))
-        ->post('/money-rewards', 'money-rewards.create', Controllers\CreateRewardController::class)
+        ->post('/posts/{id}/money-rewards', 'money-rewards.create', Controllers\CreateRewardController::class)
         ->get('/users/{id}/money-rewards', 'money-rewards.history', Controllers\ListUserRewardController::class),
 
     new Extend\Locales(__DIR__ . '/locale'),

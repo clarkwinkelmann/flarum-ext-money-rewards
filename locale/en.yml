@@ -21,12 +21,20 @@ clarkwinkelmann-money-rewards:
                 create: Create money instead of subtracting my balance
                 comment: Comment (public)
             submit: Submit
+            success: The reward has been sent to the post author!
         profile:
             nav: Rewards
             title: Rewards
         post:
             action: Reward
-            disallowed: You cannot reward this post. The most likely reasons are that the author is anonymous or deleted their account.
+            disallowedOwn: You cannot reward your own posts.
+            disallowedOther: You cannot reward this post. The most likely reasons are that the author is anonymous or deleted their account.
+            section: Rewards
+        record:
+            from: from
+            to: to
+            post: 'for <a>post #{number}</a> in discussion "{title}"'
+            comment: 'Comment:'
     api:
         error:
             decimals: The amount is limited to {decimals} decimals.

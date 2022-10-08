@@ -1,13 +1,10 @@
 import app from 'flarum/forum/app';
 import UserPage from 'flarum/forum/components/UserPage';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
-import avatar from 'flarum/common/helpers/avatar';
-import username from 'flarum/common/helpers/username';
-import humanTime from 'flarum/common/helpers/humanTime';
 import extractText from 'flarum/common/utils/extractText';
 import {ApiPayloadPlural} from 'flarum/common/Store';
 import Reward from '../models/Reward';
-import FormattedMoney from './FormattedMoney';
+import RewardRecord from './RewardRecord';
 
 export default class RewardHistoryPage extends UserPage {
     loading: boolean = true
@@ -43,26 +40,8 @@ export default class RewardHistoryPage extends UserPage {
             return LoadingIndicator.component();
         }
 
-        return m('ul.MoneyRewardHistoryPage', [
-            this.rewards.map(reward => {
-                const giver = reward.giver() || null;
-                const receiver = reward.receiver() || null;
-
-                return m('li', [
-                    FormattedMoney.component({
-                        money: reward.amount(),
-                    }),
-                    ' from ',
-                    avatar(giver),
-                    username(giver),
-                    ' to ',
-                    avatar(receiver),
-                    username(receiver),
-                    ' on ',
-                    humanTime(reward.createdAt()),
-                    m('div', m('em', reward.comment())),
-                ]);
-            }),
+        return m('ul.MoneyRewardHistoryPage.MoneyRewardRecords', [
+            this.rewards.map(reward => RewardRecord.component({reward, showReceiver: true})),
         ]);
     }
 }

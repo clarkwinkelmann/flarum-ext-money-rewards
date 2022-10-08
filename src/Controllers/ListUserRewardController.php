@@ -16,7 +16,7 @@ class ListUserRewardController extends AbstractListController
     public $serializer = RewardSerializer::class;
 
     public $include = [
-        'post',
+        'post.discussion',
         'giver',
         'receiver',
     ];

@@ -2,8 +2,8 @@ import app from 'flarum/forum/app';
 import Modal, {IInternalModalAttrs} from 'flarum/common/components/Modal';
 import Button from 'flarum/common/components/Button';
 import Switch from 'flarum/common/components/Switch';
+import {ApiPayloadSingle} from 'flarum/common/Store';
 import Post from 'flarum/common/models/Post';
-import Reward from '../models/Reward';
 import FormattedMoney from './FormattedMoney';
 
 interface RewardModalAttrs extends IInternalModalAttrs {
@@ -124,17 +124,27 @@ export default class RewardModal extends Modal<RewardModalAttrs> {
 
         this.loading = true;
 
-        app.store.createRecord<Reward>('money-rewards').save({
-            amount: this.customAmount ? this.customAmountValue : app.forum.attribute<string[]>('moneyRewardsPreselection')[this.preselectAmount],
-            createMoney: this.createMoney,
-            comment: this.comment,
-            relationships: {
-                post: this.attrs.post,
+        app.request<ApiPayloadSingle>({
+            method: 'POST',
+            url: app.forum.attribute('apiUrl') + '/posts/' + this.attrs.post.id() + '/money-rewards',
+            errorHandler: this.onerror.bind(this),
+            body: {
+                data: {
+                    attributes: {
+                        amount: this.customAmount ? this.customAmountValue : app.forum.attribute<string[]>('moneyRewardsPreselection')[this.preselectAmount],
+                        createMoney: this.createMoney,
+                        comment: this.comment,
+                    },
+                },
             },
-        }, {
-            errorHandler: this.onerror.bind(this)
         })
-            .then(this.hide.bind(this))
+            .then(payload => {
+                app.store.pushPayload(payload);
+
+                this.hide();
+
+                app.alerts.show({type: 'success'}, app.translator.trans('clarkwinkelmann-money-rewards.forum.modal.success'));
+            })
             .catch(() => {
                 this.loading = false;
                 m.redraw();

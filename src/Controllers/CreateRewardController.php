@@ -4,8 +4,8 @@ namespace ClarkWinkelmann\MoneyRewards\Controllers;
 
 use AntoineFr\Money\Event\MoneyUpdated;
 use ClarkWinkelmann\MoneyRewards\Reward;
-use ClarkWinkelmann\MoneyRewards\RewardSerializer;
 use Flarum\Api\Controller\AbstractCreateController;
+use Flarum\Api\Serializer\PostSerializer;
 use Flarum\Foundation\ValidationException;
 use Flarum\Http\RequestUtil;
 use Flarum\Locale\Translator;
@@ -21,7 +21,16 @@ use Tobscure\JsonApi\Document;
 
 class CreateRewardController extends AbstractCreateController
 {
-    public $serializer = RewardSerializer::class;
+    // We return the post with moneyRewards relation so that the UI updates with the new reward
+    public $serializer = PostSerializer::class;
+
+    public $include = [
+        // We include giver because it's listed under the post and also to update the actor's balance in the UI
+        'moneyRewards.giver',
+        'moneyRewards.fullGiver',
+        // Receiver is not shown under the post, but this will update their balance in the user card
+        'moneyRewards.fullReceiver',
+    ];
 
     protected $settings;
     protected $events;
@@ -44,7 +53,7 @@ class CreateRewardController extends AbstractCreateController
 
         $actor = RequestUtil::getActor($request);
 
-        $post = $this->repository->findOrFail(Arr::get($request->getParsedBody(), 'data.relationships.post.data.id'), $actor);
+        $post = $this->repository->findOrFail(Arr::get($request->getQueryParams(), 'id'), $actor);
 
         $actor->assertCan('rewardWithMoney', $post);
 
@@ -116,7 +125,7 @@ class CreateRewardController extends AbstractCreateController
         }
         $this->events->dispatch(new MoneyUpdated($recipient));
 
-        return $reward;
+        return $post;
     }
 
     protected function validateAmount(float $amount, User $actor)

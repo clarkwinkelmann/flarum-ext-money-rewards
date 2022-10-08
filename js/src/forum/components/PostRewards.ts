@@ -1,9 +1,8 @@
+import app from 'flarum/forum/app';
 import Component, {ComponentAttrs} from 'flarum/common/Component';
 import Post from 'flarum/common/models/Post';
-import avatar from 'flarum/common/helpers/avatar';
-import username from 'flarum/common/helpers/username';
 import Reward from '../models/Reward';
-import FormattedMoney from './FormattedMoney';
+import RewardRecord from './RewardRecord';
 
 interface PostRewardsAttrs extends ComponentAttrs {
     post: Post
@@ -18,18 +17,9 @@ export default class PostRewards extends Component<PostRewardsAttrs> {
             return null;
         }
 
-        return m('ul.PostMoneyRewards', rewards.map(reward => {
-            const giver = reward.giver() || null;
-
-            return m('li.PostMoneyReward', [
-                FormattedMoney.component({
-                    money: reward.amount(),
-                }),
-                ' by ',
-                avatar(giver),
-                username(giver),
-                m('div', m('em', reward.comment())),
-            ])
-        }));
+        return m('.PostMoneyRewards', [
+            m('h4', app.translator.trans('clarkwinkelmann-money-rewards.forum.post.section')),
+            m('ul.MoneyRewardRecords', rewards.map(reward => RewardRecord.component({reward}))),
+        ]);
     }
 }

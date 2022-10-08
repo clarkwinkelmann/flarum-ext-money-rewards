@@ -8,6 +8,8 @@ This extension allows users to transfer money between each other by assigning re
 
 The history of rewards given and received is shown on the user profile.
 
+**Warning**: if you reward a post in a private discussion, anyone with access to the reward history will be able to access the post content and discussion title!
+
 ## Installation
 
     composer require clarkwinkelmann/flarum-ext-money-rewards
