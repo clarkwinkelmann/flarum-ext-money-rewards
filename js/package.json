@@ -1,5 +1,5 @@
 {
-    "name": "@clarkwinkelmann/formulaire-money-rewards",
+    "name": "@clarkwinkelmann/money-rewards",
     "private": true,
     "dependencies": {
         "flarum-tsconfig": "^1.0",
